@@ -42,6 +42,7 @@ a:hover {
 .preview {
     border: 1px solid #657b83;
     padding: 2%;
+    margin-bottom:3%;
 }
 
 div.navbar {

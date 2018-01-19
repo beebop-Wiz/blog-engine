@@ -38,7 +38,7 @@ categories=(
 truncate $BLOGHOME/posts.txt -s 0
 for c in $categories; do truncate $BLOGHOME/$c/posts.txt -s 0; done
 
-for MARKDOWN in `find $BLOGHOME/md -type f -regex '^.*[^#~]$' -printf "%T+\t%p\n" | sort | cut -f 2`; do
+for MARKDOWN in `find $BLOGHOME/md -type f -regex '^.*[^#~]$' -printf "%T+\t%p\n" | sort -r | cut -f 2`; do
     HTML=$BLOGHOME/$(realpath --relative-to=$BLOGHOME/md/ $MARKDOWN)     # convert to normalized path relative to /blog
     HTML=${HTML%.md}.html				  # convert to .html extension via bash JFM
     CATEGORY=$(dirname $(realpath --relative-to=$BLOGHOME/md/ $MARKDOWN))
