@@ -22,6 +22,14 @@ a:hover {
     text-decoration:none;
 }
 
+p a {
+    background-color:#eee8d5;
+}
+
+p a:hover {
+    background-color:#ddd7c4;
+}
+
 .title {
     font-size:200%;
     font-weight:bold;
