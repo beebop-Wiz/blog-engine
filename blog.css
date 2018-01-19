@@ -1,0 +1,69 @@
+body {
+    margin-left:10%;
+    margin-right:10%;
+    background-color:#fdf6e3;
+    color:#657b83;
+    text-align:justify;
+}
+
+a:link {
+    color:inherit;
+    text-decoration:none;
+}
+
+a:visited {
+    color:inherit;
+    text-decoration:none;
+}
+
+a:hover {
+    color:inherit;
+    background-color:#eee8d5;
+    text-decoration:none;
+}
+
+.title {
+    font-size:200%;
+    font-weight:bold;
+}
+
+.author {
+    font-weight:bold;
+}
+
+.category {
+    font-style:italic;
+}
+
+.date {
+    font-style:italic;
+}
+
+.preview {
+    border: 1px solid #657b83;
+    padding: 2%;
+}
+
+div.navbar {
+    border-bottom: 1px solid #657b83;
+    width:100%;
+}
+
+span.navbar-right {
+    float:right;
+}
+
+.boilerplate {
+    font-size:50%;
+    position:absolute;
+    bottom:10px;
+}
+
+code {
+    background-color:#eee8d5;
+}
+
+a.continue {
+    font-style:italic;
+    background-color:#eee8d5;
+}
