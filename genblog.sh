@@ -1,6 +1,7 @@
 #!/bin/bash
 BLOGHOME=/home/beebop/public/blog
 AUTHOR="Blake Thomas"
+PREVIEW_LENGTH=10
 
 # colorscheme nonsense
 typeset -A solarized
@@ -33,6 +34,10 @@ categories=(
     meta
 )
 
+# do some math for the header length
+LINES=$(($(wc -l blog_header.html | cut -d ' ' -f 1) + $PREVIEW_LENGTH))
+OFFSET=$(($(awk '/BEGIN CONTENT/ {print FNR}' blog_header.html) + 1))
+
 # generate blog posts
 
 truncate $BLOGHOME/posts.txt -s 0
@@ -59,8 +64,6 @@ s/{{DATE}}/$(date -d @$(stat -c %Y $MARKDOWN) +%Y-%m-%d)/g"\
     tail -n +2 $MARKDOWN | markdown - >> $CONTENT
     cat $CONTENT >> $HEADER_PROC
     cat $HEADER_PROC blog_footer.html > $HTML
-    LINES=$(($(wc -l blog_header.html | cut -d ' ' -f 1) + 10))
-    OFFSET=$(($(awk '/BEGIN CONTENT/ {print FNR}' $HEADER_PROC) + 1))
     tail -n +$OFFSET $HEADER_PROC | head -n $(($(wc -l blog_header.html | cut -d ' ' -f 1) - OFFSET + 10)) > $HTML.preview
     /bin/echo -e $HTML "\t" $(head -n 1 $MARKDOWN) >> $BLOGHOME/posts.txt
     /bin/echo -e $HTML "\t" $(head -n 1 $MARKDOWN) >> $BLOGHOME/$CATEGORY/posts.txt
@@ -78,7 +81,9 @@ while read f; do
     TITLE=$(echo $f | cut -d ' ' -f 2-)
     echo "<div class=\"preview\">" >> $BLOGHOME/index.html
     cat $NAME.preview >> $BLOGHOME/index.html
-    echo "... (<a class=\"continue\" href=\"/$HTML\">Read more</a>)" >> $BLOGHOME/index.html
+    if [ $(($(wc -l $NAME.preview | cut -d ' ' -f 1) - ($(wc -l blog_header.html | cut -d ' ' -f 1) - $OFFSET))) -ge $PREVIEW_LENGTH ]; then
+	echo "... (<a class=\"continue\" href=\"/$HTML\">Read more</a>)" >> $BLOGHOME/index.html
+    fi
     echo "</div>" >> $BLOGHOME/index.html
 done <$BLOGHOME/posts.txt	# this syntax is kinda weird. this is essentially the input to the `read f`
 # gotta love bash - why I have to do this crap to read line-by-line
