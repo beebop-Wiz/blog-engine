@@ -27,11 +27,12 @@ solarized=(
 typeset -A categories_color
 categories_color=(
     [meta]=cyan
+    [development]=orange
 )
 
-typeset -a categories
+declare -a categories
 categories=(
-    meta
+    meta development
 )
 
 # do some math for the header length
@@ -41,7 +42,7 @@ OFFSET=$(($(awk '/BEGIN CONTENT/ {print FNR}' blog_header.html) + 1))
 # generate blog posts
 
 truncate $BLOGHOME/posts.txt -s 0
-for c in $categories; do truncate $BLOGHOME/$c/posts.txt -s 0; done
+for c in ${categories[@]}; do truncate $BLOGHOME/$c/posts.txt -s 0; done
 
 for MARKDOWN in `find $BLOGHOME/md -type f -regex '^.*[^#~]$' -printf "%T+\t%p\n" | sort -r | cut -f 2`; do
     HTML=$BLOGHOME/$(realpath --relative-to=$BLOGHOME/md/ $MARKDOWN)     # convert to normalized path relative to /blog
@@ -91,8 +92,8 @@ done <$BLOGHOME/posts.txt	# this syntax is kinda weird. this is essentially the 
 
 # generate by-category indexes
 
-for c in $categories; do
-    sed "s/{{CATEGORY}}/$c/g;s/{{STYLE_CSS}}/color:${solarized[${categories_color[$CATEGORY]}]};/g;" index_header.html > $BLOGHOME/$c/index.html
+for c in ${categories[@]}; do
+    sed "s/{{CATEGORY}}/$c/g;s/{{STYLE_CSS}}/color:${solarized[${categories_color[$c]}]};/g;" index_header.html > $BLOGHOME/$c/index.html
     while read f; do
 	NAME=$(echo $f | cut -d ' ' -f 1)
 	HTML=$(realpath --relative-to=$BLOGHOME $NAME)
@@ -103,6 +104,7 @@ for c in $categories; do
 	echo "</div>" >> $BLOGHOME/$c/index.html
     done <$BLOGHOME/$c/posts.txt
     cat index_footer.html >> $BLOGHOME/$c/index.html
+    echo $c
 done
 
 cat index_footer.html >> $BLOGHOME/index.html
